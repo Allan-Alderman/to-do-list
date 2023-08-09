@@ -18,6 +18,8 @@ import {
 } from "./graphql/mutations";
 import { Auth } from 'aws-amplify';
 
+var username = null; 
+
 const App = ({ signOut }) => {
 
   const [toDoItems, setToDoItems] = useState([]);
@@ -26,15 +28,14 @@ const App = ({ signOut }) => {
     fetchToDoItems();
   }, []);
 
-  async function fetchToDoItems() {    ;        
-    const username = (await Auth.currentAuthenticatedUser()).username;
+  async function fetchToDoItems() {               
+    username = username || (await Auth.currentAuthenticatedUser()).username;    
     const apiData = await API.graphql({ query: listToDoItems });    
     const toDoItemsFromAPI = apiData.data.listToDoItems.items.filter((toDoItem) => toDoItem.username === username);
     setToDoItems(toDoItemsFromAPI);
   }
 
-  async function createToDoItem(event) {
-    const username = (await Auth.currentAuthenticatedUser()).username;
+  async function createToDoItem(event) {    
     event.preventDefault();
     const form = new FormData(event.target);
     const data = {
@@ -62,7 +63,7 @@ const App = ({ signOut }) => {
 
   return (
     <View className="App">
-      <Heading level={1}>To-Do Items</Heading>
+      <Heading level={1}>To-Do Items for {username}</Heading>
       <View as="form" margin="3rem 0" onSubmit={createToDoItem}>
         <Flex direction="row" justifyContent="center">
           <TextField
@@ -90,7 +91,7 @@ const App = ({ signOut }) => {
             required
           />
           <Button type="submit" variation="primary">
-            Create toDoItem
+            Create To-Do Item
           </Button>
         </Flex>
       </View>
