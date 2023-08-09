@@ -1,0 +1,7 @@
+type ToDoItem @model @auth(rules: [ { allow: public } ] ){
+  id: ID!
+  name: String!
+  description: String
+  username: String!
+  duedate: String!
+}
